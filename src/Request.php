@@ -27,6 +27,17 @@ class Request
 
     protected static $errors = [];
     protected static $formDataMediaTypes = ['application/x-www-form-urlencoded'];
+    
+    /**
+     * Internal instance of Leaf Form
+     * @var \Leaf\Form
+     */
+    protected static $validator;
+
+    public function __construct()
+    {
+        static::$validator = new \Leaf\Form;
+    }
 
     /**
      * Get HTTP method
@@ -333,13 +344,30 @@ class Request
      */
     public static function validate(array $rules, bool $returnFullData = false)
     {
-        $data = \Leaf\Form::validate(static::body(false), $rules);
+        if (!static::$validator) {
+            static::$validator = new \Leaf\Form;
+        }
+
+        $data = static::$validator->validate(static::body(false), $rules);
 
         if ($data === false) {
             return false;
         }
 
         return $returnFullData ? $data : static::get(array_keys($rules));
+    }
+
+    /**
+     * Return validator instance
+     * @return \Leaf\Form
+     */
+    public static function validator()
+    {
+        if (!static::$validator) {
+            static::$validator = new \Leaf\Form;
+        }
+
+        return static::$validator;
     }
 
     /**
@@ -409,7 +437,11 @@ class Request
         }
         
         $fileSystem = new \Leaf\FS;
-        if(!isset($config['rename']) || !$config['rename']) $config['unique'] = true;
+
+        if (!isset($config['rename']) || !$config['rename']) {
+            $config['unique'] = true;
+        }
+        
         $uploadedFile = $fileSystem->uploadFile(
             $file,
             preg_replace(
@@ -657,7 +689,7 @@ class Request
     {
         return array_merge(
             static::$errors,
-            \Leaf\Form::errors(),
+            static::$validator ? static::$validator->errors() : [],
             class_exists('\Leaf\Auth') ? static::auth()->errors() : []
         );
     }
