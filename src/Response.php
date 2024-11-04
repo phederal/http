@@ -260,18 +260,22 @@ EOT;
      * This method prepares this response to return an HTTP Redirect response
      * to the HTTP client.
      *
-     * @param string $url The redirect destination
+     * @param string|array $url The redirect destination
      * @param int $status The redirect HTTP status code
      */
-    public function redirect(string $url, int $status = 302)
+    public function redirect($url, int $status = 302)
     {
-        if (class_exists('Leaf\Eien\Server') && PHP_SAPI === 'cli') {
-            \Leaf\Config::set('response.redirect', [$url, $status]);
-            return;
+        if (is_array($url)) {
+            $url = app()->route($url[0]);
         }
 
         if (class_exists('Leaf\App')) {
             $url = str_replace('//', '/', app()->getBasePath() . $url);
+        }
+
+        if (class_exists('Leaf\Eien\Server') && PHP_SAPI === 'cli') {
+            \Leaf\Config::set('response.redirect', [$url, $status]);
+            return;
         }
 
         Headers::status($status);
