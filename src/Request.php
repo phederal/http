@@ -27,7 +27,7 @@ class Request
 
     protected static $errors = [];
     protected static $formDataMediaTypes = ['application/x-www-form-urlencoded'];
-    
+
     /**
      * Internal instance of Leaf Form
      * @var \Leaf\Form
@@ -236,7 +236,7 @@ class Request
     {
         return static::get($key) ?? $default;
     }
-    
+
     /**
      * Returns request data
      *
@@ -336,10 +336,10 @@ class Request
 
     /**
      * Validate the request data
-     * 
+     *
      * @param array $rules The rules to validate against
      * @param boolean $returnFullData Return the full data or just the validated data?
-     * 
+     *
      * @return false|array Returns false if validation fails, or the validated data if validation passes
      */
     public static function validate(array $rules, bool $returnFullData = false)
@@ -354,7 +354,7 @@ class Request
             return false;
         }
 
-        return $returnFullData ? $data : static::get(array_keys($rules));
+        return $returnFullData ? static::body() : $data;
     }
 
     /**
@@ -399,7 +399,7 @@ class Request
 
     /**
      * Get data passed from the previous middleware
-     * 
+     *
      * @param string|null $key The key to get from the middleware data
      */
     public static function next($key = null)
@@ -415,7 +415,7 @@ class Request
      * @param string $key The name of the file input the request.
      * @param string $destination The directory where the file should be stored.
      * @param array $config Optional configurations: max_file_size, file_type, extensions
-     * 
+     *
      * @return array|false An array containing the status or false for a failure.
      */
     public static function upload(string $key, string $destination, array $config = [])
@@ -435,13 +435,13 @@ class Request
                 return false;
             }
         }
-        
+
         $fileSystem = new \Leaf\FS;
 
         if (!isset($config['rename']) || !$config['rename']) {
             $config['unique'] = true;
         }
-        
+
         $uploadedFile = $fileSystem->uploadFile(
             $file,
             preg_replace(
@@ -462,7 +462,7 @@ class Request
 
     /**
      * Store a file from the request with a given name
-     * 
+     *
      * @param string $key The name of the file input the request.
      * @param string $destination The directory where the file should be stored.
      * @param string $name The name to store the file as.
