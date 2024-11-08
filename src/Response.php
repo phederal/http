@@ -263,7 +263,7 @@ EOT;
      * @param string|array $url The redirect destination
      * @param int $status The redirect HTTP status code
      */
-    public function redirect($url, int $status = 302)
+    public function redirect($url, int $status = 302, bool $exit = true)
     {
         if (is_array($url)) {
             $url = app()->route($url[0]);
@@ -280,6 +280,10 @@ EOT;
 
         Headers::status($status);
         Headers::set('Location', $url, true, $status);
+
+        if ($exit) {
+            exit($status);
+        }
     }
 
     /**
