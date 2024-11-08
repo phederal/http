@@ -56,7 +56,7 @@ class Response
 
     /**
      * Output any text
-     * 
+     *
      * @param string $data The data to output
      * @param int $code The response status code
      */
@@ -98,10 +98,10 @@ class Response
 
         $this->send();
     }
-    
+
     /**
      * Output js script
-     * 
+     *
      * @param string $data The data to output
      * @param int $code The response status code
      */
@@ -245,7 +245,7 @@ EOT;
 
     /**
      * Output some data and break the application
-     * 
+     *
      * @param mixed $data The data to output
      * @param int $code The Http status code
      */
@@ -284,7 +284,7 @@ EOT;
 
     /**
      * Pass data to the route handler
-     * 
+     *
      * @param mixed $data The data to pass
      */
     public function next($data)
@@ -383,9 +383,11 @@ EOT;
      * Flash a piece of data to the session.
      *
      * @param string|array key The key of the item to set
-     * @param string $value The value of flash item
+     * @param mixed $value The value of flash item
+     *
+     * @return Response
      */
-    public function withFlash($key, string $value): Response
+    public function withFlash($key, $value = null): Response
     {
         if (!class_exists('Leaf\Http\Session')) {
             Headers::contentHtml();
@@ -398,7 +400,7 @@ EOT;
             }
         }
 
-        \Leaf\Flash::set($key, $value);
+        \Leaf\Flash::set($value, $key);
 
         return $this;
     }
