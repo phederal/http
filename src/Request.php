@@ -103,9 +103,11 @@ class Request
             $d = $data;
             $data = [];
 
-            foreach (explode('&', $d) as $chunk) {
-                $param = explode('=', $chunk);
-                $data[$param[0]] = urldecode($param[1]);
+            if ($d) {
+                foreach (explode('&', $d) as $chunk) {
+                    $param = explode('=', $chunk);
+                    $data[$param[0]] = urldecode($param[1]);
+                }
             }
         } else if (strpos($contentType, 'application/json') !== 0 && strpos($contentType, 'multipart/form-data') !== 0) {
             $safeData = false;
