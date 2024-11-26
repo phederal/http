@@ -269,7 +269,7 @@ EOT;
             $url = app()->route($url[0]);
         }
 
-        if (class_exists('Leaf\App')) {
+        if (class_exists('Leaf\App') && !strpos($url, '://')) {
             $url = str_replace('//', '/', app()->getBasePath() . $url);
         }
 
